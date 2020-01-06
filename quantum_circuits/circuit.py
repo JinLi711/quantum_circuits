@@ -1,10 +1,14 @@
 from qubit import Qubit
+from measurements import measure
 
 class Circuit(object):
     """Class for building a quantum circuit.
     """
     
     def __init__(self, num_qubits, num_bits):
+        if num_qubits < 1:
+            raise ValueError('You must have at least one qubit.')
+
         self.num_qubits = num_qubits
         self.num_bits = num_bits
         self.qubits = [Qubit(i) for i in range(num_qubits)]
@@ -46,3 +50,7 @@ class Circuit(object):
         """
 
         pass
+
+    def measure(self, qubit_index, bit_index, basis='z'):
+        measured_bits = measure(self.qubits, basis)
+        self.bits[bit_index] = measured_bits[qubit_index]
