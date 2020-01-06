@@ -9,7 +9,8 @@ class Qubit(object):
         self.state = Matrix([Integer(1), Integer(0)])
 
     def H(self):
+        
         self.state = gates.H_gate() * self.state
 
-    def X(self):    
+    def X(self):   
         self.state = gates.X_gate() * self.state

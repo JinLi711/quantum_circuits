@@ -3,8 +3,10 @@ import unittest
 from sympy import *
 
 import gates
+import measurements
+import circuit
 
-# @unittest.skip('Correct') 
+@unittest.skip('Correct') 
 class Test_gates(unittest.TestCase):
     phi = Symbol('phi')
     theta = Symbol('theta')
@@ -66,6 +68,21 @@ class Test_gates(unittest.TestCase):
             [1, -1]
         ]) / sqrt(2)
         self.assertEqual(result, H_gate)
+
+# @unittest.skip('Correct')
+class test_measurements(unittest.TestCase):
+    # @unittest.skip('Correct')
+    def test_measure(self):
+        circ = circuit.Circuit(4, 5)
+        circ.X(3)
+        circ.X(0)
+        circ.measure(3, 4)
+        circ.measure(0, 1)
+        circ.measure(1, 2)
+        circ.bit_list_to_str()
+        result = circ.bits
+        self.assertEqual(result, '01001')
+
 
 
 if __name__ == "__main__":

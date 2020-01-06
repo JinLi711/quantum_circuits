@@ -12,17 +12,18 @@ class Circuit(object):
         self.num_qubits = num_qubits
         self.num_bits = num_bits
         self.qubits = [Qubit(i) for i in range(num_qubits)]
-        self.bits = [0 for i in range(num_qubits)]
+        self.bits = [0 for i in range(num_bits)]
+        self._measured_bits = None
 
 
     def get_qubit(self, qubit_index):
         return self.qubits[qubit_index]
 
     def H(self, qubit_index):
-        self.get_qubit(qubit_index).H
+        self.get_qubit(qubit_index).H()
 
     def X(self, qubit_index):
-        self.get_qubit(qubit_index).X
+        self.get_qubit(qubit_index).X()
 
     def CX(self, control_index, target_index):
         # TODO: implement this
@@ -52,5 +53,18 @@ class Circuit(object):
         pass
 
     def measure(self, qubit_index, bit_index, basis='z'):
-        measured_bits = measure(self.qubits, basis)
-        self.bits[bit_index] = measured_bits[qubit_index]
+        """Perform a measurement under a certain basis.
+        """
+
+        if self._measured_bits is None:
+            measured_bits = measure(self.qubits, basis)
+            self._measured_bits = measured_bits
+            
+        self.bits[bit_index] = self._measured_bits[-1 * qubit_index - 1]
+
+
+    def bit_list_to_str(self):
+        """Convert the list of bits into a string.
+        """
+        bits = [str(b) for b in self.bits]
+        self.bits = ''.join(bits)
