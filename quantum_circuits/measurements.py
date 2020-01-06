@@ -4,6 +4,15 @@ import numpy as np
 import utils
 
 def measure(qubits, basis='z'):
+    """Perform a measurement on the qubits.
+
+    Args:
+        qubits (list): list of qubit.Qubit
+        basis (str): basis used to measure the qubits
+
+    Returns:
+        (str) binary representation of the resulting measurement
+    """
 
     if basis == 'z':
 
@@ -16,7 +25,7 @@ def measure(qubits, basis='z'):
         # randomly select the measured bits based on the amplitudes
         probabilities = np.absolute(tensor).flatten()
         random_choice = np.random.choice(len(tensor), p=probabilities)
-        binary_choice = utils.int_to_binary(random_choice, len(tensor))
+        binary_choice = utils.int_to_binary(random_choice, len(qubits))
         return binary_choice
 
     else:

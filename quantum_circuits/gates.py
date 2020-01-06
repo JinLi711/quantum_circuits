@@ -14,6 +14,16 @@ def U3_gate(phi, theta, lambda_):
     return gate
 
 
+def CX():
+    gate = Matrix([
+        [1, 0, 0, 0],
+        [0, 1, 0, 0],
+        [0, 0, 0, 1],
+        [0, 0, 1, 0]
+    ])
+    return gate
+
+
 def U2_gate(phi, lambda_):
     return U3_gate(phi, pi / 2.0, lambda_)
 

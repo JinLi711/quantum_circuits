@@ -1,10 +1,21 @@
 import unittest
+import functools
 
 from sympy import *
+from sympy.physics.quantum import TensorProduct
 
 import gates
 import measurements
 import circuit
+
+def bit_to_matrix(x):
+    if x == '0':
+        return Matrix([1, 0])
+    elif x == '1':
+        return Matrix([0, 1])
+    else:
+        raise ValueError('Bit must be either 0 or 1.')
+
 
 @unittest.skip('Correct') 
 class Test_gates(unittest.TestCase):
@@ -81,8 +92,18 @@ class test_measurements(unittest.TestCase):
         circ.measure(1, 2)
         circ.bit_list_to_str()
         result = circ.bits
-        self.assertEqual(result, '01001')
-
+        actual_bit_string = '01001'
+        self.assertEqual(result, actual_bit_string)
+        
+        get_state = lambda x: circ.qubits[x].state
+        actual = tensorproduct(
+            get_state(0),
+            get_state(1),
+            get_state(2),
+            get_state(3))
+        result = circ.tensor_syntax()
+        # Need to manually check that they are equal
+        # self.assertEqual(actual, result)
 
 
 if __name__ == "__main__":
