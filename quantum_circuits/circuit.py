@@ -20,18 +20,21 @@ class Circuit(object):
 
         self.num_qubits = num_qubits
         self.num_bits = num_bits
+
         qubits = [Matrix([1,0])] * num_qubits
         self.qubits = utils.tensorproducts(qubits)
         self.bits = [0 for i in range(num_bits)]
+
         self._measured_bits = None
+        self._all_operations = []
 
 
-    def is_qubit_available(self, qubit_index):
+    def _is_qubit_available(self, qubit_index):
         if qubit_index > self.num_qubits:
             raise ValueError('Not an available qubit.')
 
 
-    def apply_single_gate(self, gate, qubit_index):
+    def _apply_single_gate(self, gate, qubit_index):
         """Apply a single gate by forming the tensor operation.
 
         If qubit_index is unspecified, apply the gate to all qubits.
@@ -39,41 +42,45 @@ class Circuit(object):
         """
 
         if qubit_index is None:
-            operator = [gate] * self.num_qubits
+            operator = [gate()] * self.num_qubits
         else:
-            self.is_qubit_available(qubit_index)
+            self._is_qubit_available(qubit_index)
 
-            operator = [gates.ID_gate()] * self.num_qubits
-            operator[qubit_index] = gate
+            operator = [gates.ID_gate()()] * self.num_qubits
+            operator[qubit_index] = gate()
 
         operator = utils.tensorproducts(operator)
         self.qubits = operator * self.qubits
+        self._all_operations.append(gate)
 
 
     def H(self, qubit_index=None):
         """Apply the Hadamard gate to the qubits."""
-        self.apply_single_gate(gates.H_gate(), qubit_index)
+        self._apply_single_gate(gates.H_gate(qubit_index), qubit_index)
 
 
     def X(self, qubit_index=None):
         """Apply the NOT operation to the qubits."""
-        self.apply_single_gate(gates.X_gate(), qubit_index)
+        self._apply_single_gate(gates.X_gate(qubit_index), qubit_index)
 
 
     def CX(self, control_index, target_index):
         """Flip the target qubit if the control qubit is 1."""
 
-        self.is_qubit_available(control_index)
-        self.is_qubit_available(target_index)
+        self._is_qubit_available(control_index)
+        self._is_qubit_available(target_index)
 
         if target_index != control_index + 1:
             raise ValueError('Right now, we can only apply the controlled-X \
                 when the target is next to the control qubit.')
         
-        operator = [gates.ID_gate()] * (self.num_qubits - 1)
-        operator[control_index] = gates.CX_gate()
+        operator = [gates.ID_gate()()] * (self.num_qubits - 1)
+        cx_gate = gates.CX_gate([control_index, target_index])
+        operator[control_index] = cx_gate()
         operator = utils.tensorproducts(operator)
+        
         self.qubits = operator * self.qubits
+        self._all_operations.append(cx_gate)
 
 
     def execute(self, num_instances):
@@ -90,11 +97,19 @@ class Circuit(object):
         return Counter(results)
 
 
+    def conditional_gate(self):
+        """Apply a gate conditioned on a classical bit
+        """
+        
+        raise NotImplementedError
+
+
     def compile(self):
         """Compile the built circuit into OpenQASM code.
         """
 
         pass
+
 
     def get_state(self, output='bracket'):
         """Returns the resulting qubit state.
