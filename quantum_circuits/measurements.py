@@ -15,12 +15,11 @@ def measure(qubits, basis='z'):
     """
 
     if basis == 'z':
-        # import pdb; pdb.set_trace()
         qubits = np.array(qubits).astype(np.float64)
         size = qubits.shape[0]
-
+        # import pdb; pdb.set_trace()
         # randomly select the measured bits based on the amplitudes
-        probabilities = np.absolute(qubits).flatten()
+        probabilities = np.absolute(qubits).flatten() ** 2
         random_choice = np.random.choice(size, p=probabilities)
         binary_choice = utils.int_to_binary(random_choice, int(np.log2(size)))
         

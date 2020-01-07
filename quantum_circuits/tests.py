@@ -84,6 +84,8 @@ class Test_gates(unittest.TestCase):
 
 class test_circuit(unittest.TestCase):
 
+    num_runs = 1000
+
     @unittest.skip('Correct')
     def test_X(self):
         circ = circuit.Circuit(2, 5)
@@ -128,11 +130,25 @@ class test_circuit(unittest.TestCase):
         state = Matrix([0, 0, 0, 1])
         self.assertEqual(circ.qubits, state)
 
+    @unittest.skip('Correct')
+    def test_execute(self):
+        # test deterministic (measuring always produces the same result)
+        circ = circuit.Circuit(2, 5)
+        circ.X(0)
+        results = circ.execute(self.num_runs)
+        self.assertEqual(results['10'], self.num_runs)
+
+        # non-deterministic
+        # we should have that all possibilities will occur with equal probability
+        circ = circuit.Circuit(2, 5)
+        circ.H()
+        results = circ.execute(self.num_runs)
 
 # @unittest.skip('Still need fixing')
 class test_measurements(unittest.TestCase):
     # @unittest.skip('Correct')
     def test_measure(self):
+        # tests deterministic measurement
         circ = circuit.Circuit(4, 5)
         circ.X(3)
         circ.X(0)

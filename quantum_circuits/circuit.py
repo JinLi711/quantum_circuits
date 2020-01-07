@@ -1,4 +1,5 @@
 import functools
+from collections import Counter
 
 from sympy import *
 from sympy.physics.quantum import TensorProduct, tensor_product_simp
@@ -84,7 +85,10 @@ class Circuit(object):
         Returns:
             (dict) mapping possible measured results to number of occurences.
         """
-        pass
+        
+        results = [measure(self.qubits) for i in range(num_instances)]
+        return Counter(results)
+
 
     def compile(self):
         """Compile the built circuit into OpenQASM code.
