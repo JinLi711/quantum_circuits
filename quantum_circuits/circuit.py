@@ -2,8 +2,8 @@ import functools
 from collections import Counter
 
 from sympy import *
-from sympy.physics.quantum import TensorProduct, tensor_product_simp
-
+from sympy.physics.quantum import TensorProduct, tensor_product_simp, Ket
+import numpy as np
 
 from qubit import Qubit
 from measurements import measure
@@ -96,16 +96,20 @@ class Circuit(object):
 
         pass
 
-    def tensor_syntax(self):
+    def braket_notation(self):
         """Returns the resulting tensorproduct superposition in Sympy syntax.
         """
-        raise NotImplementedError
-        # tensor = self.qubits[0].state
-        # for i in range(1, self.num_qubits):
-        #     tensor = TensorProduct(tensor, self.qubits[i].state)
 
-        # tensor = tensor_product_simp(tensor)
-        # return tensor
+        lin_combin = 0
+        qubits = self.qubits
+        size = qubits.shape[0]
+        num_qubits = int(np.log2(size))
+
+        for i in range(size):
+            lin_combin += (qubits[i] * Ket(utils.int_to_binary(i, num_qubits)))
+
+        return lin_combin
+
 
     def measure(self, qubit_index, bit_index, basis='z'):
         """Perform a measurement under a certain basis.
