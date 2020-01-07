@@ -9,7 +9,7 @@ import measurements
 import circuit
 import utils
 
-@unittest.skip('Correct') 
+# @unittest.skip('Correct') 
 class Test_gates(unittest.TestCase):
     phi = Symbol('phi')
     theta = Symbol('theta')
@@ -24,7 +24,7 @@ class Test_gates(unittest.TestCase):
         ])
         self.assertEqual(result, U2_gate)
 
-    # @unittest.skip('Correct')
+    @unittest.skip('Correct')
     def test_U1(self):
         result = gates.U1_gate(self.lambda_)()
         result = nsimplify(result)
@@ -34,7 +34,7 @@ class Test_gates(unittest.TestCase):
         ])
         self.assertEqual(result, U1_gate)
 
-    # @unittest.skip('Correct')
+    @unittest.skip('Correct')
     def test_RX(self):
         theta = self.theta
         result = gates.RX_gate(theta)()
@@ -44,7 +44,7 @@ class Test_gates(unittest.TestCase):
         ])
         self.assertEqual(result, RX_gate)
 
-    # @unittest.skip('Correct')
+    @unittest.skip('Correct')
     def test_RY(self):
         theta = self.theta
         result = gates.RY_gate(theta)()
@@ -54,7 +54,7 @@ class Test_gates(unittest.TestCase):
         ])
         self.assertEqual(result, RY_gate)
 
-    # @unittest.skip('Correct')
+    @unittest.skip('Correct')
     def test_X(self):
         result = gates.X_gate()()
         X_gate = Matrix([
@@ -62,6 +62,26 @@ class Test_gates(unittest.TestCase):
             [1, 0]
         ])
         self.assertEqual(result, X_gate)
+
+    
+    # @unittest.skip('Correct')
+    def test_Y(self):
+        result = gates.Y_gate()()
+        Y_gate = Matrix([
+            [0, I],
+            [-I, 0]
+        ])
+        self.assertEqual(result, Y_gate)
+
+
+    # @unittest.skip('Correct')
+    def test_Z(self):
+        result = gates.Z_gate()()
+        Z_gate = Matrix([
+            [1, 0],
+            [0, -1]
+        ])
+        self.assertEqual(result, Z_gate)
 
     # @unittest.skip('Correct')
     def test_H(self):
@@ -82,7 +102,7 @@ class Test_gates(unittest.TestCase):
         self.assertEqual(result, ID_gate)
 
 
-# @unittest.skip('Correct')
+@unittest.skip('Correct')
 class test_circuit(unittest.TestCase):
 
     num_runs = 1000
@@ -144,6 +164,7 @@ class test_circuit(unittest.TestCase):
         circ = circuit.Circuit(2, 5)
         circ.H()
         results = circ.execute(self.num_runs)
+
 
 @unittest.skip('Correct')
 class test_measurements(unittest.TestCase):

@@ -93,7 +93,28 @@ class Circuit(object):
     def RZ(self, theta, qubit_index=None):
         """Apply a rotation gate around the z-axis of the Bloch sphere."""
         self._apply_single_gate(gates.RZ_gate(theta, qubit_index), qubit_index)
-        
+
+
+    def U3(self, phi, theta, lambda_, qubit_index=None):
+        """Apply the universal gate."""
+        self._apply_single_gate(
+            gates.U3_gate(phi, theta, lambda_, qubit_index), 
+            qubit_index)
+
+
+    def U2(self, phi, lambda_, qubit_index=None):
+        """Apply the U2 gate."""
+        self._apply_single_gate(
+            gates.U2_gate(phi, lambda_, qubit_index), 
+            qubit_index)
+
+
+    def U1(self, lambda_, qubit_index=None):
+        """Apply the universal gate."""
+        self._apply_single_gate(
+            gates.U1_gate(lambda_, qubit_index), 
+            qubit_index)
+
 
     def CX(self, control_index, target_index):
         """Flip the target qubit if the control qubit is 1."""

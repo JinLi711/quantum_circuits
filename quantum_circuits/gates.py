@@ -1,8 +1,6 @@
-from warnings import warn
-
 from sympy import *
 
-warn_untested = lambda x: warn('({}) is not yet tested yet.'.format(x))
+import utils
 
 class Gate(object):
     """Gate class for quantum operations.
@@ -96,6 +94,14 @@ class RZ_gate(Gate):
         Gate.__init__(self, 'RZ', indexes, gate, template)
 
 
+class ID_gate(Gate):
+    def __init__(self, indexes=None):
+        gate = Matrix(simplify(U3_gate(0, 0, 0)() ))
+        template = 'id q[{}]'.format(indexes)
+
+        Gate.__init__(self, 'ID', indexes, gate, template)
+
+        
 class X_gate(Gate):
     def __init__(self, indexes=None):
         gate = Matrix(simplify(I * U3_gate(0, pi, pi)() ))
@@ -104,12 +110,21 @@ class X_gate(Gate):
         Gate.__init__(self, 'X', indexes, gate, template)
 
 
-class ID_gate(Gate):
+class Y_gate(Gate):
     def __init__(self, indexes=None):
-        gate = Matrix(simplify(U3_gate(0, 0, 0)() ))
-        template = 'id q[{}]'.format(indexes)
+        gate = Matrix(simplify(-I * U3_gate(pi / 2, pi, pi/ 2)() ))
+        template = 'y q[{}]'.format(indexes)
 
-        Gate.__init__(self, 'ID', indexes, gate, template)
+        Gate.__init__(self, 'Y', indexes, gate, template)
+
+
+class Z_gate(Gate):
+    def __init__(self, indexes=None):
+        gate = Matrix(simplify( U1_gate(pi)() ))
+        template = 'z q[{}]'.format(indexes)
+
+        Gate.__init__(self, 'Z', indexes, gate, template)
+
 
 
 class H_gate(Gate):
@@ -131,21 +146,3 @@ class CX_gate(Gate):
         template = 'cx q[{}], q[{}]'.format(indexes[0], indexes[1])
 
         Gate.__init__(self, 'CX', indexes, gate, template)
-
-
-def Y_gate():
-    warn_untested('Y_gate')
-    gate = Matrix([
-        [0, I],
-        [-I, 0]
-        ])
-    return gate
-
-
-def Z_gate():
-    warn_untested('Z_gate')
-    gate = Matrix([
-        [1, 0],
-        [0, -1]
-        ])
-    return gate

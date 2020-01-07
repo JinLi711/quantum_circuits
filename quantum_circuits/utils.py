@@ -1,12 +1,15 @@
 import functools
 
 from sympy.physics.quantum import TensorProduct
+from warnings import warn
+
 from sympy import *
 import numpy as np
 
 # compute the tensor product of a list of matrixes / vectors
 tensorproducts = lambda l: functools.reduce(lambda x,y: TensorProduct(x,y), l)
 
+warn_untested = lambda x: warn('({}) is not yet tested yet.'.format(x))
 
 def sp_to_np(x):
     """convert Sympy to numpy array"""
