@@ -96,19 +96,36 @@ class Circuit(object):
 
         pass
 
-    def braket_notation(self):
-        """Returns the resulting tensorproduct superposition in Sympy syntax.
+    def get_state(self, output='bracket'):
+        """Returns the resulting qubit state.
+
+        output can be one of:
+            `bracket`: linear combination of the computational basis
+            `tensor`: tensor product of the state
+
+        Args:
+            output (str): output type. 
+
+        Returns:
+            sympy Matrix
         """
 
-        lin_combin = 0
-        qubits = self.qubits
-        size = qubits.shape[0]
-        num_qubits = int(np.log2(size))
+        if output == 'bracket':
+            lin_combin = 0
+            qubits = self.qubits
+            size = qubits.shape[0]
+            num_qubits = int(np.log2(size))
 
-        for i in range(size):
-            lin_combin += (qubits[i] * Ket(utils.int_to_binary(i, num_qubits)))
+            for i in range(size):
+                lin_combin += (qubits[i] * Ket(utils.int_to_binary(i, num_qubits)))
 
-        return lin_combin
+            return lin_combin
+        
+        elif output == 'tensor':
+            return self.qubits
+
+        else:
+            raise ValueError('Not a correct output type.')
 
 
     def measure(self, qubit_index, bit_index, basis='z'):
