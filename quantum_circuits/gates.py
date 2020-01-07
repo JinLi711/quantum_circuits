@@ -14,7 +14,7 @@ def U3_gate(phi, theta, lambda_):
     return gate
 
 
-def CX():
+def CX_gate():
     gate = Matrix([
         [1, 0, 0, 0],
         [0, 1, 0, 0],
@@ -34,11 +34,11 @@ def U1_gate(lambda_):
 
 
 def RX_gate(theta):
-    return simplify(U3_gate(-pi / 2.0, theta, pi / 2.0))
+    return Matrix(simplify(U3_gate(-pi / 2.0, theta, pi / 2.0)))
 
 
 def RY_gate(theta):
-    return simplify(U3_gate(0.0, theta, 0.0))
+    return Matrix(simplify(U3_gate(0.0, theta, 0.0)))
 
 
 def RZ_gate(theta):
@@ -47,7 +47,11 @@ def RZ_gate(theta):
 
 def X_gate():
     # includes phase shift
-    return simplify(I * U3_gate(0, pi, pi))
+    return Matrix(simplify(I * U3_gate(0, pi, pi)))
+
+
+def ID_gate():
+    return Matrix(simplify(U3_gate(0, 0, 0)))
 
 
 def Y_gate():
@@ -70,4 +74,4 @@ def Z_gate():
 
 def H_gate():
     # includes phase shift
-    return simplify(I * U2_gate(0, pi))
+    return Matrix(simplify(I * U2_gate(0, pi)))

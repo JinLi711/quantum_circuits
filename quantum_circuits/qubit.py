@@ -5,6 +5,7 @@ import gates
 class Qubit(object):
 
     def __init__(self, qubit_position):
+        raise NotImplementedError('Qubit is not used right now.')
         self.qubit_position = qubit_position
         self.reset_state()
 

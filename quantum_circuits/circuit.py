@@ -3,8 +3,11 @@ import functools
 from sympy import *
 from sympy.physics.quantum import TensorProduct, tensor_product_simp
 
+
 from qubit import Qubit
 from measurements import measure
+import gates
+import utils
 
 class Circuit(object):
     """Class for building a quantum circuit.
@@ -16,23 +19,61 @@ class Circuit(object):
 
         self.num_qubits = num_qubits
         self.num_bits = num_bits
-        self.qubits = [Qubit(i) for i in range(num_qubits)]
+        qubits = [Matrix([1,0])] * num_qubits
+        self.qubits = utils.tensorproducts(qubits)
         self.bits = [0 for i in range(num_bits)]
         self._measured_bits = None
 
 
-    def get_qubit(self, qubit_index):
-        return self.qubits[qubit_index]
+    def is_qubit_available(self, qubit_index):
+        if qubit_index > self.num_qubits:
+            raise ValueError('Not an available qubit.')
 
-    def H(self, qubit_index):
-        self.get_qubit(qubit_index).H()
 
-    def X(self, qubit_index):
-        self.get_qubit(qubit_index).X()
+    def apply_single_gate(self, gate, qubit_index):
+        """Apply a single gate by forming the tensor operation.
+
+        If qubit_index is unspecified, apply the gate to all qubits.
+        Otherwise, apply the gate to the qubit index.
+        """
+
+        if qubit_index is None:
+            operator = [gate] * self.num_qubits
+        else:
+            self.is_qubit_available(qubit_index)
+
+            operator = [gates.ID_gate()] * self.num_qubits
+            operator[qubit_index] = gate
+
+        operator = utils.tensorproducts(operator)
+        self.qubits = operator * self.qubits
+
+
+    def H(self, qubit_index=None):
+        """Apply the Hadamard gate to the qubits."""
+        self.apply_single_gate(gates.H_gate(), qubit_index)
+
+
+    def X(self, qubit_index=None):
+        """Apply the NOT operation to the qubits."""
+        self.apply_single_gate(gates.X_gate(), qubit_index)
+
 
     def CX(self, control_index, target_index):
-        # TODO: implement this
-        pass
+        """Flip the target qubit if the control qubit is 1."""
+
+        self.is_qubit_available(control_index)
+        self.is_qubit_available(target_index)
+
+        if target_index != control_index + 1:
+            raise ValueError('Right now, we can only apply the controlled-X \
+                when the target is next to the control qubit.')
+        
+        operator = [gates.ID_gate()] * (self.num_qubits - 1)
+        operator[control_index] = gates.CX_gate()
+        operator = utils.tensorproducts(operator)
+        self.qubits = operator * self.qubits
+
 
     def execute(self, num_instances):
         """Execute the built circuit a certain number of times.

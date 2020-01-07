@@ -32,7 +32,7 @@ class Test_gates(unittest.TestCase):
         ])
         self.assertEqual(result, U2_gate)
 
-    @unittest.skip('Correct')
+    # @unittest.skip('Correct')
     def test_U1(self):
         result = gates.U1_gate(self.lambda_)
         result = nsimplify(result)
@@ -42,7 +42,7 @@ class Test_gates(unittest.TestCase):
         ])
         self.assertEqual(result, U1_gate)
 
-    @unittest.skip('Correct')
+    # @unittest.skip('Correct')
     def test_RX(self):
         theta = self.theta
         result = gates.RX_gate(theta)
@@ -52,7 +52,7 @@ class Test_gates(unittest.TestCase):
         ])
         self.assertEqual(result, RX_gate)
 
-    @unittest.skip('Correct')
+    # @unittest.skip('Correct')
     def test_RY(self):
         theta = self.theta
         result = gates.RY_gate(theta)
@@ -62,7 +62,7 @@ class Test_gates(unittest.TestCase):
         ])
         self.assertEqual(result, RY_gate)
 
-    @unittest.skip('Correct')
+    # @unittest.skip('Correct')
     def test_X(self):
         result = gates.X_gate()
         X_gate = Matrix([
@@ -71,7 +71,7 @@ class Test_gates(unittest.TestCase):
         ])
         self.assertEqual(result, X_gate)
 
-    @unittest.skip('Correct')
+    # @unittest.skip('Correct')
     def test_H(self):
         result = gates.H_gate()
         H_gate = Matrix([
@@ -80,7 +80,64 @@ class Test_gates(unittest.TestCase):
         ]) / sqrt(2)
         self.assertEqual(result, H_gate)
 
-# @unittest.skip('Correct')
+    # @unittest.skip('Correct')
+    def test_ID(self):
+        result = gates.ID_gate()
+        ID_gate = Matrix([
+            [1, 0],
+            [0, 1]
+        ])
+        self.assertEqual(result, ID_gate)
+
+
+class test_circuit(unittest.TestCase):
+
+    @unittest.skip('Correct')
+    def test_X(self):
+        circ = circuit.Circuit(2, 5)
+
+        state = Matrix([1, 0, 0, 0])
+        self.assertEqual(circ.qubits, state)
+
+        circ.X()
+        state = Matrix([0, 0, 0, 1])
+        self.assertEqual(circ.qubits, state)
+
+        circ = circuit.Circuit(2, 5)
+        circ.X(1)
+        state = Matrix([0, 1, 0, 0])
+        self.assertEqual(circ.qubits, state)
+
+        circ.X(0)
+        state = Matrix([0, 0, 0, 1])
+        self.assertEqual(circ.qubits, state)
+
+    @unittest.skip('Correct')
+    def test_H(self):
+        circ = circuit.Circuit(2, 5)
+        circ.H()
+        state = Matrix([1/2, 1/2, 1/2, 1/2])
+        self.assertEqual(circ.qubits, state)
+
+        circ = circuit.Circuit(2, 5)
+        circ.H(1)
+        state = Matrix([sqrt(2)/ 2, sqrt(2)/ 2, 0, 0])
+        self.assertEqual(circ.qubits, state)
+
+    @unittest.skip('Correct')
+    def test_CX(self):
+        circ = circuit.Circuit(2, 5)
+        circ.CX(0, 1)
+        state = Matrix([1, 0, 0, 0])
+        self.assertEqual(circ.qubits, state)
+
+        circ.X(0)
+        circ.CX(0, 1)
+        state = Matrix([0, 0, 0, 1])
+        self.assertEqual(circ.qubits, state)
+
+
+@unittest.skip('Still need fixing')
 class test_measurements(unittest.TestCase):
     # @unittest.skip('Correct')
     def test_measure(self):
