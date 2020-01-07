@@ -118,7 +118,7 @@ class test_circuit(unittest.TestCase):
         circ.H(1)
         state = Matrix([sqrt(2)/ 2, sqrt(2)/ 2, 0, 0])
         self.assertEqual(circ.qubits, state)
-        import pdb; pdb.set_trace()
+
     # @unittest.skip('Correct')
     def test_CX(self):
         circ = circuit.Circuit(2, 5)

@@ -3,6 +3,11 @@ import numpy as np
 
 import utils
 
+class Measure(object):
+    def __init__(self, qubit_index, bit_index):
+        self.template = 'measure q[{}] -> c[{}]'.format(qubit_index, bit_index)
+
+        
 def measure(qubits, basis='z'):
     """Perform a measurement on the qubits.
 

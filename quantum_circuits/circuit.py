@@ -6,9 +6,20 @@ from sympy.physics.quantum import TensorProduct, tensor_product_simp, Ket
 import numpy as np
 
 from qubit import Qubit
-from measurements import measure
+import measurements
 import gates
 import utils
+
+
+class Barrier(object):
+    """Create a barrier in the circuit. 
+    
+    This prevents optimization of operations across the barrier.
+    """
+
+    def __init__(self):
+        self.template = 'barrier q'
+
 
 class Circuit(object):
     """Class for building a quantum circuit.
@@ -64,6 +75,26 @@ class Circuit(object):
         self._apply_single_gate(gates.X_gate(qubit_index), qubit_index)
 
 
+    def ID(self, qubit_index=None):
+        """Apply the identity operation to the qubits."""
+        self._apply_single_gate(gates.ID_gate(qubit_index), qubit_index)
+
+
+    def RX(self, theta, qubit_index=None):
+        """Apply a rotation gate around the x-axis of the Bloch sphere."""
+        self._apply_single_gate(gates.RX_gate(theta, qubit_index), qubit_index)
+
+
+    def RY(self, theta, qubit_index=None):
+        """Apply a rotation gate around the y-axis of the Bloch sphere."""
+        self._apply_single_gate(gates.RY_gate(theta, qubit_index), qubit_index)
+
+
+    def RZ(self, theta, qubit_index=None):
+        """Apply a rotation gate around the z-axis of the Bloch sphere."""
+        self._apply_single_gate(gates.RZ_gate(theta, qubit_index), qubit_index)
+        
+
     def CX(self, control_index, target_index):
         """Flip the target qubit if the control qubit is 1."""
 
@@ -78,9 +109,18 @@ class Circuit(object):
         cx_gate = gates.CX_gate([control_index, target_index])
         operator[control_index] = cx_gate()
         operator = utils.tensorproducts(operator)
-        
+
         self.qubits = operator * self.qubits
         self._all_operations.append(cx_gate)
+
+
+    def barrier(self):
+        self._all_operations.append(Barrier())
+
+
+    def reset_qubit(self, qubit_index):
+        """Reset a qubit to |0>"""
+        raise NotImplementedError
 
 
     def execute(self, num_instances):
@@ -93,7 +133,7 @@ class Circuit(object):
             (dict) mapping possible measured results to number of occurences.
         """
         
-        results = [measure(self.qubits) for i in range(num_instances)]
+        results = [measurements.measure(self.qubits) for i in range(num_instances)]
         return Counter(results)
 
 
@@ -104,11 +144,27 @@ class Circuit(object):
         raise NotImplementedError
 
 
-    def compile(self):
+    def compile(self, outfile=None):
         """Compile the built circuit into OpenQASM code.
+
+        TODO: allow for functions of operations.
         """
 
-        pass
+        with open('templates/header.txt', 'r') as f:
+            QASM_file = f.read()
+
+        QASM_file += '\n\nqreg q[{}]\ncreg c[{}]\n\n'.format(
+            self.num_qubits, 
+            self.num_bits)
+        
+        for op in self._all_operations:
+            QASM_file += op.template + ';\n'
+        
+        if outfile is not None:
+            with open(outfile, 'w+') as f:
+                f.write(QASM_file)
+
+        return QASM_file
 
 
     def get_state(self, output='bracket'):
@@ -145,10 +201,18 @@ class Circuit(object):
 
     def measure(self, qubit_index, bit_index, basis='z'):
         """Perform a measurement under a certain basis.
+
+        Args:
+            qubit_index (int): index of measured qubit
+            bit_index (int): index of bit to record measured qubit
+            basis (str): measurement basis
+
+        Returns:
+            None
         """
 
         if self._measured_bits is None:
-            measured_bits = measure(self.qubits, basis)
+            measured_bits = measurements.measure(self.qubits, basis)
             self._measured_bits = measured_bits
             new_state = list(map(
                 lambda x: utils.bit_to_matrix(x),
@@ -157,6 +221,7 @@ class Circuit(object):
             self.qubits = utils.tensorproducts(new_state)
 
         self.bits[bit_index] = self._measured_bits[-1 * qubit_index - 1]
+        self._all_operations.append(measurements.Measure(qubit_index, bit_index))
 
 
     def bit_list_to_str(self):
