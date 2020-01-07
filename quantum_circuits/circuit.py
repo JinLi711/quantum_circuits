@@ -95,13 +95,13 @@ class Circuit(object):
     def tensor_syntax(self):
         """Returns the resulting tensorproduct superposition in Sympy syntax.
         """
+        raise NotImplementedError
+        # tensor = self.qubits[0].state
+        # for i in range(1, self.num_qubits):
+        #     tensor = TensorProduct(tensor, self.qubits[i].state)
 
-        tensor = self.qubits[0].state
-        for i in range(1, self.num_qubits):
-            tensor = TensorProduct(tensor, self.qubits[i].state)
-
-        tensor = tensor_product_simp(tensor)
-        return tensor
+        # tensor = tensor_product_simp(tensor)
+        # return tensor
 
     def measure(self, qubit_index, bit_index, basis='z'):
         """Perform a measurement under a certain basis.
@@ -110,11 +110,11 @@ class Circuit(object):
         if self._measured_bits is None:
             measured_bits = measure(self.qubits, basis)
             self._measured_bits = measured_bits
-            for i, bit in enumerate(measured_bits):
-                self.qubits[i].reset_state()
+            new_state = list(map(
+                lambda x: utils.bit_to_matrix(x),
+                list(measured_bits)))
 
-                if bit == '1':
-                    self.qubits[i].X()
+            self.qubits = utils.tensorproducts(new_state)
 
         self.bits[bit_index] = self._measured_bits[-1 * qubit_index - 1]
 

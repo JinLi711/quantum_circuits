@@ -7,15 +7,7 @@ from sympy.physics.quantum import TensorProduct
 import gates
 import measurements
 import circuit
-
-def bit_to_matrix(x):
-    if x == '0':
-        return Matrix([1, 0])
-    elif x == '1':
-        return Matrix([0, 1])
-    else:
-        raise ValueError('Bit must be either 0 or 1.')
-
+import utils
 
 @unittest.skip('Correct') 
 class Test_gates(unittest.TestCase):
@@ -137,7 +129,7 @@ class test_circuit(unittest.TestCase):
         self.assertEqual(circ.qubits, state)
 
 
-@unittest.skip('Still need fixing')
+# @unittest.skip('Still need fixing')
 class test_measurements(unittest.TestCase):
     # @unittest.skip('Correct')
     def test_measure(self):
@@ -152,15 +144,10 @@ class test_measurements(unittest.TestCase):
         actual_bit_string = '01001'
         self.assertEqual(result, actual_bit_string)
         
-        get_state = lambda x: circ.qubits[x].state
-        actual = tensorproduct(
-            get_state(0),
-            get_state(1),
-            get_state(2),
-            get_state(3))
-        result = circ.tensor_syntax()
-        # Need to manually check that they are equal
-        # self.assertEqual(actual, result)
+        state = ['1', '0', '0', '1']
+        state = list(map(lambda x: utils.bit_to_matrix(x), state))
+        state = utils.tensorproducts(state)
+        self.assertEqual(circ.qubits, state)
 
 
 if __name__ == "__main__":
