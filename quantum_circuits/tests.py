@@ -17,14 +17,9 @@ class Test_gates(unittest.TestCase):
     
     @unittest.skip('Tests have not implemented.')
     def test_U2(self):
-        result = gates.U2_gate(self.phi, self.lambda_)
-        U2_gate = Matrix([
-            [],
-            []
-        ])
-        self.assertEqual(result, U2_gate)
+        pass
 
-    @unittest.skip('Correct')
+    # @unittest.skip('Correct')
     def test_U1(self):
         result = gates.U1_gate(self.lambda_)()
         result = nsimplify(result)
@@ -34,7 +29,7 @@ class Test_gates(unittest.TestCase):
         ])
         self.assertEqual(result, U1_gate)
 
-    @unittest.skip('Correct')
+    # @unittest.skip('Correct')
     def test_RX(self):
         theta = self.theta
         result = gates.RX_gate(theta)()
@@ -44,7 +39,7 @@ class Test_gates(unittest.TestCase):
         ])
         self.assertEqual(result, RX_gate)
 
-    @unittest.skip('Correct')
+    # @unittest.skip('Correct')
     def test_RY(self):
         theta = self.theta
         result = gates.RY_gate(theta)()
@@ -54,7 +49,7 @@ class Test_gates(unittest.TestCase):
         ])
         self.assertEqual(result, RY_gate)
 
-    @unittest.skip('Correct')
+    # @unittest.skip('Correct')
     def test_X(self):
         result = gates.X_gate()()
         X_gate = Matrix([
@@ -102,7 +97,7 @@ class Test_gates(unittest.TestCase):
         self.assertEqual(result, ID_gate)
 
 
-@unittest.skip('Correct')
+# @unittest.skip('Correct')
 class test_circuit(unittest.TestCase):
 
     num_runs = 1000
@@ -166,7 +161,7 @@ class test_circuit(unittest.TestCase):
         results = circ.execute(self.num_runs)
 
 
-@unittest.skip('Correct')
+# @unittest.skip('Correct')
 class test_measurements(unittest.TestCase):
     # @unittest.skip('Correct')
     def test_measure(self):
