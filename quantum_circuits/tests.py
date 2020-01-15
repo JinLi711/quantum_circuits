@@ -9,7 +9,7 @@ import measurements
 import circuit
 import utils
 
-# @unittest.skip('Correct') 
+@unittest.skip('Correct') 
 class Test_gates(unittest.TestCase):
     phi = Symbol('phi')
     theta = Symbol('theta')
@@ -96,6 +96,42 @@ class Test_gates(unittest.TestCase):
         ])
         self.assertEqual(result, ID_gate)
 
+    # @unittest.skip('Correct')
+    def test_S(self):
+        result = gates.S_gate()()
+        S_gate = Matrix([
+            [1, 0],
+            [0, I]
+        ])
+        self.assertEqual(result, S_gate)
+
+    # @unittest.skip('Correct')
+    def test_SDG(self):
+        result = gates.SDG_gate()()
+        SDG_gate = Matrix([
+            [1, 0],
+            [0, -I]
+        ])
+        self.assertEqual(result, SDG_gate)
+
+    # @unittest.skip('Correct')
+    def test_T(self):
+        result = gates.T_gate()()
+        T_gate = Matrix([
+            [1, 0],
+            [0, exp(0.25*I*pi)]
+        ])
+        self.assertEqual(result, T_gate)
+
+    # @unittest.skip('Correct')
+    def test_TDG(self):
+        result = gates.TDG_gate()()
+        TDG_gate = Matrix([
+            [1, 0],
+            [0, exp(-0.25*I*pi)]
+        ])
+        self.assertEqual(result, TDG_gate)
+
 
 # @unittest.skip('Correct')
 class test_circuit(unittest.TestCase):
@@ -147,6 +183,16 @@ class test_circuit(unittest.TestCase):
         self.assertEqual(circ.qubits, state)
 
     # @unittest.skip('Correct')
+    def test_CCX(self):
+        circ = circuit.Circuit(3, 5)
+        circ.X(0)
+        circ.X(1)
+        circ.CCX(0, 1, 2)
+
+        state = Matrix([0, 0, 0, 0, 0, 0, 0, 1])
+        self.assertEqual(circ.qubits, state)
+
+    # @unittest.skip('Correct')
     def test_execute(self):
         # test deterministic (measuring always produces the same result)
         circ = circuit.Circuit(2, 5)
@@ -161,7 +207,7 @@ class test_circuit(unittest.TestCase):
         results = circ.execute(self.num_runs)
 
 
-# @unittest.skip('Correct')
+@unittest.skip('Correct')
 class test_measurements(unittest.TestCase):
     # @unittest.skip('Correct')
     def test_measure(self):
