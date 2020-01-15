@@ -52,7 +52,7 @@ circ.compile()
 circ.measure(0, 1)
 ```
 
-More examples are located [here](https://github.com/JinLi711/quantum_circuits/blob/master/quantum_circuits/examples.ipynb)
+More examples are located [here](https://github.com/JinLi711/quantum_circuits/blob/master/quantum_circuits/examples.ipynb).
 
 
 Gates that are currently avaliable are:
