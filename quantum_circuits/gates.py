@@ -6,7 +6,7 @@ class Gate(object):
     """Gate class for quantum operations.
 
     Attributes:
-        name (str):
+        name (str): name of the gate
         indexes (int or list of ints): indexes to perform the quantum gate on
         gate (sympy Matrix): gate operation
         template (str): template for OpenQASM conversion code
@@ -126,13 +126,44 @@ class Z_gate(Gate):
         Gate.__init__(self, 'Z', indexes, gate, template)
 
 
-
 class H_gate(Gate):
     def __init__(self, indexes=None):
         gate = Matrix(simplify(I * U2_gate(0, pi)() ))
         template = 'h q[{}]'.format(indexes)
 
         Gate.__init__(self, 'H', indexes, gate, template)
+
+
+class S_gate(Gate):
+    def __init__(self, indexes=None):
+        gate = Matrix(simplify(U1_gate(pi / 2)() ))
+        template = 's q[{}]'.format(indexes)
+
+        Gate.__init__(self, 'S', indexes, gate, template)
+
+
+class SDG_gate(Gate):
+    def __init__(self, indexes=None):
+        gate = Matrix(simplify(U1_gate(-pi / 2)() ))
+        template = 'sdg q[{}]'.format(indexes)
+
+        Gate.__init__(self, 'SDG', indexes, gate, template)
+
+
+class T_gate(Gate):
+    def __init__(self, indexes=None):
+        gate = Matrix(simplify(U1_gate(pi / 4)() ))
+        template = 't q[{}]'.format(indexes)
+
+        Gate.__init__(self, 'T', indexes, gate, template)
+
+
+class TDG_gate(Gate):
+    def __init__(self, indexes=None):
+        gate = Matrix(simplify(U1_gate(-pi / 4)() ))
+        template = 'tdg q[{}]'.format(indexes)
+
+        Gate.__init__(self, 'TDG', indexes, gate, template)
 
 
 class CX_gate(Gate):
@@ -146,3 +177,33 @@ class CX_gate(Gate):
         template = 'cx q[{}], q[{}]'.format(indexes[0], indexes[1])
 
         Gate.__init__(self, 'CX', indexes, gate, template)
+
+
+class CCX_gate(Gate):
+    def __init__(self, indexes=[None, None, None]):
+        
+        # if cx gate restriction is lifted, we can implement 
+        # the gate in terms of built in gates
+        gate = Matrix([
+            [1, 0, 0, 0, 0, 0, 0, 0],
+            [0, 1, 0, 0, 0, 0, 0, 0],
+            [0, 0, 1, 0, 0, 0, 0, 0],
+            [0, 0, 0, 1, 0, 0, 0, 0],
+            [0, 0, 0, 0, 1, 0, 0, 0],
+            [0, 0, 0, 0, 0, 1, 0, 0],
+            [0, 0, 0, 0, 0, 0, 0, 1],
+            [0, 0, 0, 0, 0, 0, 1, 0],
+        ])
+        # I = I_gate().gate
+        # H = H_gate().gate
+        # CX = CX_gate().gate
+        # T = T_gate().gate
+        # TDG = TDG_gate().gate
+
+        template = 'ccx q[{}], q[{}], q[{}]'.format(
+            indexes[0], 
+            indexes[1],
+            indexes[2])
+
+        Gate.__init__(self, 'CCX', indexes, gate, template)
+
