@@ -5,7 +5,6 @@ from sympy import *
 from sympy.physics.quantum import TensorProduct, tensor_product_simp, Ket
 import numpy as np
 
-from qubit import Qubit
 import measurements
 import gates
 import utils
@@ -75,6 +74,16 @@ class Circuit(object):
         self._apply_single_gate(gates.X_gate(qubit_index), qubit_index)
 
 
+    def Y(self, qubit_index=None):
+        """Apply the Pauli Y operation to the qubits."""
+        self._apply_single_gate(gates.Y_gate(qubit_index), qubit_index)
+
+
+    def Z(self, qubit_index=None):
+        """Apply the Pauli Z operation to the qubits."""
+        self._apply_single_gate(gates.Z_gate(qubit_index), qubit_index) 
+
+
     def ID(self, qubit_index=None):
         """Apply the identity operation to the qubits."""
         self._apply_single_gate(gates.ID_gate(qubit_index), qubit_index)
@@ -135,6 +144,24 @@ class Circuit(object):
         self._all_operations.append(cx_gate)
 
 
+    def CCX(self, control_index1, control_index2, target_index):
+        self._is_qubit_available(control_index1)
+        self._is_qubit_available(control_index2)
+        self._is_qubit_available(target_index)
+        
+        if (target_index != control_index1 + 2) or \
+            (target_index != control_index2 + 1):
+            raise ValueError('Right now, we can only apply the CCX \
+                when the target is next to the control qubits.')
+
+        operator = [gates.ID_gate()()] * (self.num_qubits - 2)
+        cx_gate = gates.CCX_gate([control_index1, control_index2, target_index])
+        operator[control_index1] = cx_gate()
+        operator = utils.tensorproducts(operator)
+        self.qubits = operator * self.qubits
+        self._all_operations.append(cx_gate)
+
+
     def barrier(self):
         self._all_operations.append(Barrier())
 
@@ -167,8 +194,6 @@ class Circuit(object):
 
     def compile(self, outfile=None):
         """Compile the built circuit into OpenQASM code.
-
-        TODO: allow for functions of operations.
         """
 
         with open('templates/header.txt', 'r') as f:
