@@ -78,3 +78,9 @@ python tests.py
 # Caveats
 * Circuit gates are implemented niavely (i.e, the operation at a certain time step is created by taking the tensor product of all gates at that time step.) As a result, this implementation is not memory efficient for large numbers of qubits.
 * `CX, CCX` gates only work if the control and target qubits are next to each other.
+
+
+
+# Acknowledgements
+
+* [Open Quantum Assembly Language](https://arxiv.org/pdf/1707.03429.pdf)
