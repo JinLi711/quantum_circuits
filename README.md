@@ -1,6 +1,8 @@
 # Quantum Circuits
 
-Simulate quantum circuits, compile circuits written in Python into OpenQASM, and visualize the resulting tensorproduct. This repository can be used to understand the basics of quantum operations.
+Simulate quantum circuits, compile circuits written in Python into OpenQASM, and visualize the resulting tensorproduct. This repository can be used to understand the basics of quantum operations. 
+
+The implementation is based off of [Qiskit](https://qiskit.org/) and the [OpenQASM paper](https://arxiv.org/pdf/1707.03429.pdf).
 
 # Installation
 
